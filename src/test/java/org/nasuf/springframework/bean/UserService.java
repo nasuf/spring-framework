@@ -2,20 +2,26 @@ package org.nasuf.springframework.bean;
 
 public class UserService {
 
-    private String name;
-
-    public UserService(String name) {
-        this.name = name;
-    }
+    private String uId;
+    private UserDao userDao;
 
     public void queryUserInfo() {
-        System.out.println("query user info: " + name);
+        System.out.println("Query user info: " + userDao.queryUserName(uId));
     }
 
-    @Override
-    public String toString() {
-        return "UserService{" +
-                "name='" + name + '\'' +
-                '}';
+    public String getuId() {
+        return uId;
+    }
+
+    public void setuId(String uId) {
+        this.uId = uId;
+    }
+
+    public UserDao getUserDao() {
+        return userDao;
+    }
+
+    public void setUserDao(UserDao userDao) {
+        this.userDao = userDao;
     }
 }
