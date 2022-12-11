@@ -10,6 +10,7 @@ import org.nasuf.springframework.beans.factory.config.BeanDefinition;
 import org.nasuf.springframework.beans.factory.config.BeanReference;
 import org.nasuf.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.nasuf.springframework.beans.factory.support.XmlBeanDefinitionReader;
+import org.nasuf.springframework.context.support.ClassPathXmlApplicationContext;
 import org.nasuf.springframework.core.io.DefaultResourceLoader;
 import org.nasuf.springframework.core.io.Resource;
 
@@ -58,6 +59,13 @@ public class ApiTest {
 
         UserService userService = beanFactory.getBean("userService", UserService.class);
         userService.queryUserInfo();
+    }
+
+    @Test
+    public void test_applicationContext() {
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring-post-processor.xml");
+        UserService userService = applicationContext.getBean("userService", UserService.class);
+        System.out.println(userService.toString());
     }
 
     @Test
