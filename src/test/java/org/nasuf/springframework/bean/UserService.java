@@ -1,25 +1,19 @@
 package org.nasuf.springframework.bean;
 
+import org.nasuf.springframework.BeanFactory;
 import org.nasuf.springframework.BeansException;
-import org.nasuf.springframework.beans.factory.DisposableBean;
-import org.nasuf.springframework.beans.factory.InitializingBean;
+import org.nasuf.springframework.beans.factory.*;
+import org.nasuf.springframework.context.ApplicationContext;
+import org.nasuf.springframework.context.ApplicationContextAware;
 
-public class UserService implements InitializingBean, DisposableBean {
+public class UserService implements BeanNameAware, BeanClassLoaderAware, ApplicationContextAware, BeanFactoryAware {
 
+    private ApplicationContext applicationContext;
+    private BeanFactory beanFactory;
     private String uId;
     private String company;
     private String location;
     private UserDao userDao;
-
-    @Override
-    public void destroy() throws Exception {
-        System.out.println("Executing: UserService.destroy");
-    }
-
-    @Override
-    public void afterPropertiesSet() throws BeansException {
-        System.out.println("Executing: UserService.afterPropertiesSet");
-    }
 
     public void queryUserInfo() {
         System.out.println("Query user info: " + userDao.queryUserName(uId));
@@ -65,5 +59,33 @@ public class UserService implements InitializingBean, DisposableBean {
                 ", location='" + location + '\'' +
                 ", userDao=" + userDao +
                 '}';
+    }
+
+    @Override
+    public void setBeanClassLoader(ClassLoader classLoader) {
+        System.out.println("ClassLoader: " + classLoader);
+    }
+
+    @Override
+    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+        this.beanFactory = beanFactory;
+    }
+
+    @Override
+    public void setBeanName(String name) {
+        System.out.println("Bean Name is: " + name);
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
+
+    public ApplicationContext getApplicationContext() {
+        return this.applicationContext;
+    }
+
+    public BeanFactory getBeanFactory() {
+        return this.beanFactory;
     }
 }

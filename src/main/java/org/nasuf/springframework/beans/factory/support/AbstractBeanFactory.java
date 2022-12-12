@@ -6,12 +6,15 @@ import org.nasuf.springframework.beans.factory.config.BeanDefinition;
 import org.nasuf.springframework.beans.factory.config.BeanPostProcessor;
 import org.nasuf.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.nasuf.springframework.beans.factory.config.DefaultSingletonBeanRegistry;
+import org.nasuf.springframework.util.ClassUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements ConfigurableBeanFactory {
     private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<>();
+    private ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
+
     @Override
     public Object getBean(String name) throws BeansException {
         return doGetBean(name, null);
@@ -49,5 +52,9 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
 
     public List<BeanPostProcessor> getBeanPostProcessors() {
         return this.beanPostProcessors;
+    }
+
+    public ClassLoader getBeanClassLoader() {
+        return this.beanClassLoader;
     }
 }

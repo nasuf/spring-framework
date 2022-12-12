@@ -93,4 +93,15 @@ public class ApiTest {
         userService.queryUserInfo();
     }
 
+    @Test
+    public void test_aware() {
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring.xml");
+        applicationContext.registerShutdownHook();
+
+        UserService userService = applicationContext.getBean("userService", UserService.class);
+        userService.queryUserInfo();
+        System.out.println("ApplicationContextAware: " + userService.getApplicationContext());
+        System.out.println("BeanFactoryAware: " + userService.getBeanFactory());
+    }
+
 }
