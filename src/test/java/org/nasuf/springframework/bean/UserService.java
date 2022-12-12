@@ -1,11 +1,25 @@
 package org.nasuf.springframework.bean;
 
-public class UserService {
+import org.nasuf.springframework.BeansException;
+import org.nasuf.springframework.beans.factory.DisposableBean;
+import org.nasuf.springframework.beans.factory.InitializingBean;
+
+public class UserService implements InitializingBean, DisposableBean {
 
     private String uId;
     private String company;
     private String location;
     private UserDao userDao;
+
+    @Override
+    public void destroy() throws Exception {
+        System.out.println("Executing: UserService.destroy");
+    }
+
+    @Override
+    public void afterPropertiesSet() throws BeansException {
+        System.out.println("Executing: UserService.afterPropertiesSet");
+    }
 
     public void queryUserInfo() {
         System.out.println("Query user info: " + userDao.queryUserName(uId));
