@@ -13,6 +13,7 @@ import org.nasuf.springframework.beans.factory.support.XmlBeanDefinitionReader;
 import org.nasuf.springframework.context.support.ClassPathXmlApplicationContext;
 import org.nasuf.springframework.core.io.DefaultResourceLoader;
 import org.nasuf.springframework.core.io.Resource;
+import org.nasuf.springframework.event.CustomEvent;
 import org.openjdk.jol.info.ClassLayout;
 
 import java.io.IOException;
@@ -123,6 +124,13 @@ public class ApiTest {
         applicationContext.registerShutdownHook();
         UserService userService = applicationContext.getBean("userService", UserService.class);
         userService.queryUserInfo();
+    }
+
+    @Test
+    public void test_event() {
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring.xml");
+        applicationContext.publishEvent(new CustomEvent(applicationContext, 1001L, "Success"));
+        applicationContext.registerShutdownHook();
     }
 
 }

@@ -10,4 +10,8 @@
 
     <bean id="proxyUserDao" class="org.nasuf.springframework.bean.ProxyBeanFactory"/>
 
+    <bean class="org.nasuf.springframework.event.ContextClosedEventListener"/>
+    <bean class="org.nasuf.springframework.event.ContextRefreshedEventListener"/>
+    <bean class="org.nasuf.springframework.event.CustomEventListener"/>
+
 </beans>
