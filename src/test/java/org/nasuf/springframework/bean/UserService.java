@@ -13,10 +13,10 @@ public class UserService implements BeanNameAware, BeanClassLoaderAware, Applica
     private String uId;
     private String company;
     private String location;
-    private UserDao userDao;
+    private IUserDao userDao;
 
     public void queryUserInfo() {
-        System.out.println("Query user info: " + userDao.queryUserName(uId));
+        System.out.println("Query user info: " + userDao.queryUserName(uId) + ", " + company + ", " + location);
     }
 
     public String getuId() {
@@ -27,11 +27,11 @@ public class UserService implements BeanNameAware, BeanClassLoaderAware, Applica
         this.uId = uId;
     }
 
-    public UserDao getUserDao() {
+    public IUserDao getUserDao() {
         return userDao;
     }
 
-    public void setUserDao(UserDao userDao) {
+    public void setUserDao(IUserDao userDao) {
         this.userDao = userDao;
     }
 

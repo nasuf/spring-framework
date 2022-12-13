@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans>
 
-    <bean id="userDao" class="org.nasuf.springframework.bean.UserDao" init-method="initDataMethod"
-          destroy-method="destroyDataMethod"/>
-
-    <bean id="userService" class="org.nasuf.springframework.bean.UserService">
+    <bean id="userService" class="org.nasuf.springframework.bean.UserService" scope="prototype">
         <property name="uId" value="10001"/>
         <property name="company" value="Tencent"/>
         <property name="location" value="Beijing"/>
-        <property name="userDao" ref="userDao"/>
+        <property name="userDao" ref="proxyUserDao"/>
     </bean>
+
+    <bean id="proxyUserDao" class="org.nasuf.springframework.bean.ProxyBeanFactory"/>
 
 </beans>

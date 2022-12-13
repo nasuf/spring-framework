@@ -13,6 +13,7 @@ import org.nasuf.springframework.beans.factory.support.XmlBeanDefinitionReader;
 import org.nasuf.springframework.context.support.ClassPathXmlApplicationContext;
 import org.nasuf.springframework.core.io.DefaultResourceLoader;
 import org.nasuf.springframework.core.io.Resource;
+import org.openjdk.jol.info.ClassLayout;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -102,6 +103,26 @@ public class ApiTest {
         userService.queryUserInfo();
         System.out.println("ApplicationContextAware: " + userService.getApplicationContext());
         System.out.println("BeanFactoryAware: " + userService.getBeanFactory());
+    }
+
+    @Test
+    public void test_prototype() {
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring.xml");
+        applicationContext.registerShutdownHook();
+        UserService userService01 = applicationContext.getBean("userService", UserService.class);
+        UserService userService02 = applicationContext.getBean("userService", UserService.class);
+        System.out.println(userService01);
+        System.out.println(userService02);
+        System.out.println(userService01 + Integer.toHexString(userService01.hashCode()));
+        System.out.println(ClassLayout.parseInstance(userService01).toPrintable());
+    }
+
+    @Test
+    public void test_factory_bean() {
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring.xml");
+        applicationContext.registerShutdownHook();
+        UserService userService = applicationContext.getBean("userService", UserService.class);
+        userService.queryUserInfo();
     }
 
 }
