@@ -4,8 +4,12 @@ package org.nasuf.springframework;
 import cn.hutool.core.io.IoUtil;
 import org.junit.Before;
 import org.junit.Test;
-import org.nasuf.springframework.bean.UserDao;
-import org.nasuf.springframework.bean.UserService;
+import org.nasuf.springframework.aop.AdvisedSupport;
+import org.nasuf.springframework.aop.TargetSource;
+import org.nasuf.springframework.aop.aspectj.AspectJExpressionPointcut;
+import org.nasuf.springframework.aop.framework.Cglib2AopProxy;
+import org.nasuf.springframework.aop.framework.JdkDynamicAopProxy;
+import org.nasuf.springframework.bean.*;
 import org.nasuf.springframework.beans.factory.config.BeanDefinition;
 import org.nasuf.springframework.beans.factory.config.BeanReference;
 import org.nasuf.springframework.beans.factory.support.DefaultListableBeanFactory;
@@ -18,6 +22,9 @@ import org.openjdk.jol.info.ClassLayout;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
 public class ApiTest {
 
@@ -133,4 +140,41 @@ public class ApiTest {
         applicationContext.registerShutdownHook();
     }
 
+    @Test
+    public void test_aop() throws NoSuchMethodException {
+        AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut("execution(* org.nasuf.springframework.bean.UserService.*(..))");
+        Class<UserService> clazz = UserService.class;
+        Method method = clazz.getDeclaredMethod("queryUserInfo");
+        System.out.println(pointcut.matches(clazz));
+        System.out.println(pointcut.matches(method, clazz));
+    }
+
+    @Test
+    public void test_dynamic() {
+        // 目标对象
+        IUserService userService = new GeneralUserService();
+        // 组装代理信息
+        AdvisedSupport advisedSupport = new AdvisedSupport();
+        advisedSupport.setTargetSource(new TargetSource(userService));
+        advisedSupport.setMethodInterceptor(new UserServiceInterceptor());
+        advisedSupport.setMethodMatcher(new AspectJExpressionPointcut("execution(* org.nasuf.springframework.bean.IUserService.*(..))"));
+
+        // 代理对象(JdkDynamicAopProxy)
+        IUserService proxy_jdk = (IUserService) new JdkDynamicAopProxy(advisedSupport).getProxy();
+        // 测试调用
+        System.out.println("测试结果：" + proxy_jdk.queryUserInfo());
+
+        // 代理对象(Cglib2AopProxy)
+        IUserService proxy_cglib = (IUserService) new Cglib2AopProxy(advisedSupport).getProxy();
+        // 测试调用
+        System.out.println("测试结果：" + proxy_cglib.register("花花"));
+    }
+
+    @Test
+    public void test_proxy_class() {
+        IUserService userService = (IUserService) Proxy.newProxyInstance(
+                Thread.currentThread().getContextClassLoader(), new Class[]{IUserService.class}, (proxy, method, args) -> "你被代理了！");
+        String result = userService.queryUserInfo();
+        System.out.println("测试结果：" + result);
+    }
 }
